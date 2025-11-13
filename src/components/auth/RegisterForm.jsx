@@ -199,7 +199,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
 
@@ -212,7 +212,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.cedula}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
 
@@ -225,7 +225,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
 
@@ -239,7 +239,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
 
@@ -253,7 +253,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
           </div>
@@ -271,7 +271,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
 
@@ -284,7 +284,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base"
+                className="flex-1 outline-none text-sm md:text-base text-gray-900""
               />
             </div>
           </div>
