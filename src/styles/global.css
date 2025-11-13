@@ -1,0 +1,606 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== CROSS-BROWSER COMPATIBILITY LAYER ===== */
+
+/* CSS Custom Properties with fallbacks for older browsers */
+:root {
+  /* Color System with progressive enhancement */
+  --color-primary: #D4AF37;
+  --color-primary-dark: #B8941F;
+  --color-primary-light: #E8C766;
+  --color-background: #F8F4E9;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #1A202C;
+  --color-text-secondary: #4A5568;
+  --color-text-muted: #718096;
+  --color-border: #E2E8F0;
+  --color-error: #E53E3E;
+  
+  /* Fallback values for browsers that don't support CSS variables */
+  color-scheme: light;
+}
+
+/* Ensure CSS variables work in older browsers */
+@supports not (--css: variables) {
+  :root {
+    color-scheme: light;
+  }
+}
+
+/* ===== ENHANCED RESET WITH CROSS-BROWSER NORMALIZATION ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background-color: #F8F4E9;
+  background-color: var(--color-background, #F8F4E9);
+  color: #1A202C;
+  color: var(--color-text-primary, #1A202C);
+  line-height: 1.6;
+  font-weight: 400;
+  text-rendering: optimizeSpeed;
+}
+
+/* ===== PROGRESSIVE ENHANCEMENT: GRID & FLEXBOX FALLBACKS ===== */
+
+/* Grid fallback for older browsers */
+@supports not (display: grid) {
+  .grid-fallback {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -0.5rem;
+  }
+  
+  .grid-fallback > * {
+    flex: 1 1 300px;
+    margin: 0.5rem;
+  }
+}
+
+/* ===== CROSS-BROWSER AUDIO PLAYER COMPONENTS ===== */
+
+.audio-player {
+  --progress-value: 0%;
+  contain: layout style paint;
+  background: #FFFFFF;
+  background: var(--color-surface, #FFFFFF);
+  border-radius: 0.75rem;
+  border-radius: var(--radius-xl, 0.75rem);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  transition: box-shadow 0.3s ease;
+  transition: box-shadow var(--transition-base, 0.3s ease);
+  
+  /* Firefox specific */
+  scrollbar-width: none;
+}
+
+.audio-player::-webkit-scrollbar {
+  display: none;
+}
+
+.audio-player:focus-within {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 0 0 3px rgba(212, 175, 55, 0.2);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1)), 0 0 0 3px color-mix(in srgb, var(--color-primary, #D4AF37) 20%, transparent);
+}
+
+/* Progressive enhancement for slider */
+.progress-slider {
+  background: linear-gradient(
+    to right, 
+    #D4AF37 0%, 
+    #D4AF37 var(--progress-value, 0%), 
+    #E2E8F0 var(--progress-value, 0%), 
+    #E2E8F0 100%
+  );
+  background: linear-gradient(
+    to right, 
+    var(--color-primary, #D4AF37) 0%, 
+    var(--color-primary, #D4AF37) var(--progress-value, 0%), 
+    var(--color-border, #E2E8F0) var(--progress-value, 0%), 
+    var(--color-border, #E2E8F0) 100%
+  );
+  height: 6px;
+  border-radius: 0.5rem;
+  border-radius: var(--radius-lg, 0.5rem);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: background-color 0.15s ease;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+.progress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #D4AF37;
+  background: var(--color-primary, #D4AF37);
+  border: 3px solid #FFFFFF;
+  border: 3px solid var(--color-surface, #FFFFFF);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  cursor: pointer;
+  cursor: grab;
+  transition: all 0.15s ease;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.progress-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+.progress-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #B8941F;
+  background: var(--color-primary-dark, #B8941F);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+}
+
+/* Firefox */
+.progress-slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #D4AF37;
+  background: var(--color-primary, #D4AF37);
+  border: 3px solid #FFFFFF;
+  border: 3px solid var(--color-surface, #FFFFFF);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  cursor: pointer;
+  cursor: grab;
+  transition: all 0.15s ease;
+  transition: all var(--transition-fast, 0.15s ease);
+  border: 0;
+}
+
+.progress-slider::-moz-range-thumb:active {
+  cursor: grabbing;
+}
+
+.progress-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  background: #B8941F;
+  background: var(--color-primary-dark, #B8941F);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+}
+
+/* IE/Edge fallback */
+.progress-slider::-ms-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #D4AF37;
+  background: var(--color-primary, #D4AF37);
+  border: 3px solid #FFFFFF;
+  border: 3px solid var(--color-surface, #FFFFFF);
+  cursor: pointer;
+}
+
+/* Focus styles with cross-browser support */
+.progress-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #D4AF37;
+  outline: 2px solid var(--color-primary, #D4AF37);
+  outline-offset: 2px;
+}
+
+.progress-slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid #D4AF37;
+  outline: 2px solid var(--color-primary, #D4AF37);
+  outline-offset: 2px;
+}
+
+/* ===== CROSS-BROWSER ANIMATIONS WITH FALLBACKS ===== */
+
+/* Reduced motion support */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    -webkit-transform: translate3d(0, 20px, 0);
+    -moz-transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(30px, 0, 0);
+    -webkit-transform: translate3d(30px, 0, 0);
+    -moz-transform: translate3d(30px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease both;
+  -webkit-animation: fadeInUp 0.3s ease both;
+  -moz-animation: fadeInUp 0.3s ease both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease both;
+  -webkit-animation: slideInRight 0.3s ease both;
+  -moz-animation: slideInRight 0.3s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease both;
+  -webkit-animation: scaleIn 0.3s ease both;
+  -moz-animation: scaleIn 0.3s ease both;
+}
+
+.animation-delay-100 { 
+  animation-delay: 100ms;
+  -webkit-animation-delay: 100ms;
+  -moz-animation-delay: 100ms;
+}
+.animation-delay-200 { 
+  animation-delay: 200ms;
+  -webkit-animation-delay: 200ms;
+  -moz-animation-delay: 200ms;
+}
+.animation-delay-300 { 
+  animation-delay: 300ms;
+  -webkit-animation-delay: 300ms;
+  -moz-animation-delay: 300ms;
+}
+
+/* ===== ENHANCED RESPONSIVE DESIGN ===== */
+
+/* Extra small devices (portrait phones, less than 475px) */
+@media (max-width: 474px) {
+  .audio-player-mobile {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .audio-controls-mobile {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .control-group {
+    justify-content: space-around;
+    width: 100%;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .cultural-pattern {
+    background-size: 30px 30px;
+  }
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS WITH CROSS-BROWSER SUPPORT ===== */
+
+/* Focus management with cross-browser support */
+.focus-ring:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline: 2px solid var(--color-primary, #D4AF37);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #000000;
+    --color-border: #000000;
+    --color-text-primary: #000000;
+    --color-text-secondary: #000000;
+  }
+  
+  .audio-control {
+    border-width: 3px;
+    border-style: solid;
+  }
+  
+  .progress-slider {
+    border: 1px solid #000000;
+  }
+}
+
+/* Inverted colors mode */
+@media (inverted-colors: inverted) {
+  .audio-player {
+    filter: invert(1);
+  }
+}
+
+/* ===== BROWSER-SPECIFIC FIXES ===== */
+
+/* Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .audio-control {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+  
+  /* Fix for Safari bounce effect */
+  body {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+  .progress-slider {
+    height: 8px;
+  }
+  
+  /* Firefox scrollbar styling */
+  .audio-player {
+    scrollbar-color: #D4AF37 #F8F4E9;
+    scrollbar-width: thin;
+  }
+}
+
+/* Edge specific fixes */
+@supports (-ms-ime-align: auto) {
+  .audio-player {
+    -ms-overflow-style: none;
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+.will-change-transform {
+  will-change: transform;
+  -webkit-will-change: transform;
+  -moz-will-change: transform;
+}
+
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* ===== PRINT STYLES WITH CROSS-BROWSER SUPPORT ===== */
+
+@media print {
+  .audio-player {
+    box-shadow: none;
+    border: 1px solid #E2E8F0;
+    border: 1px solid var(--color-border, #E2E8F0);
+    break-inside: avoid;
+  }
+  
+  .audio-control {
+    display: none;
+  }
+  
+  /* Ensure good contrast for printing */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* ===== DARK MODE WITH GRACEFUL DEGRADATION ===== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1A202C;
+    --color-surface: #2D3748;
+    --color-text-primary: #F7FAFC;
+    --color-text-secondary: #E2E8F0;
+    --color-text-muted: #A0AEC0;
+    --color-border: #4A5568;
+  }
+  
+  /* Fallback for browsers that don't support color-scheme */
+  body {
+    background-color: #1A202C;
+    color: #F7FAFC;
+  }
+}
+
+/* ===== LEGACY BROWSER SUPPORT ===== */
+
+/* IE11 and older browsers fallbacks */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .audio-player {
+    display: block;
+    border: 1px solid #E2E8F0;
+  }
+  
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .grid > * {
+    flex: 1 1 300px;
+    margin: 0.5rem;
+  }
+}
+
+/* ===== PROGRESSIVE WEB APP ENHANCEMENTS ===== */
+
+/* Install prompt styles */
+.pwa-install-prompt {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: #FFFFFF;
+  background: var(--color-surface, #FFFFFF);
+  border: 2px solid #D4AF37;
+  border: 2px solid var(--color-primary, #D4AF37);
+  border-radius: 0.75rem;
+  border-radius: var(--radius-xl, 0.75rem);
+  padding: 1rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+  z-index: 1000;
+  max-width: 320px;
+}
+
+/* ===== UTILITY CLASSES FOR CROSS-BROWSER COMPATIBILITY ===== */
+
+/* Hide visually but keep for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Reduced motion utilities */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    -webkit-animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+    -webkit-transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hardware acceleration for better performance */
+.hardware-accelerate {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+}
+
+/* ===== FONT LOADING OPTIMIZATIONS ===== */
+
+/* Font loading states */
+.font-loading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.font-loaded {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ===== CUSTOM PROPERTIES FALLBACK SYSTEM ===== */
+
+/* Ensure custom properties have fallbacks */
+@property --color-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #D4AF37;
+}
+
+@property --color-background {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #F8F4E9;
+}
+
+/* ===== ENHANCED TOUCH INTERACTIONS ===== */
+
+@media (hover: none) and (pointer: coarse) {
+  .audio-control:hover {
+    transform: none;
+    background: #FFFFFF;
+    background: var(--color-surface, #FFFFFF);
+    border-color: #E2E8F0;
+    border-color: var(--color-border, #E2E8F0);
+    color: #4A5568;
+    color: var(--color-text-secondary, #4A5568);
+  }
+  
+  .progress-slider::-webkit-slider-thumb,
+  .progress-slider::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+/* ===== FUTURE-PROOF CSS FEATURES ===== */
+
+/* Container queries support */
+@supports (container-type: inline-size) {
+  .audio-player-container {
+    container-type: inline-size;
+    container-name: audio-player;
+  }
+  
+  @container audio-player (max-width: 400px) {
+    .audio-controls-mobile {
+      flex-direction: column;
+    }
+  }
+}
+
+/* Cascade layers support */
+@layer base, components, utilities;
+
+@layer base {
+  /* Base styles here */
+}
+
+@layer components {
+  /* Component styles here */
+}
+
+@layer utilities {
+  /* Utility styles here */
+}

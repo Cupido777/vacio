@@ -1,0 +1,158 @@
+{
+  "name": "ODAM-App - Plataforma Cultural Cartagena",
+  "short_name": "ODAM-App",
+  "description": "Plataforma de Formación Artística Digital y Rescate del Patrimonio Sonoro Vivo - IPCC Cartagena",
+  "theme_color": "#D4AF37",
+  "background_color": "#F8F4E9",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "id": "/",
+  "categories": ["education", "music", "culture", "entertainment"],
+  "lang": "es-CO",
+  "dir": "ltr",
+  "iarc_rating_id": "e58a13d7-391c-4a87-8a0f-1291cb4ea51d",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope_extensions": [],
+  "protocol_handlers": [],
+  "shortcuts": [
+    {
+      "name": "Explorar Cursos",
+      "short_name": "Cursos",
+      "description": "Acceder a la formación artística digital",
+      "url": "/cursos",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Descubrir Patrimonio",
+      "short_name": "Patrimonio",
+      "description": "Explorar el repositorio de tradiciones musicales",
+      "url": "/patrimonio",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Comunidad Creativa",
+      "short_name": "Comunidad",
+      "description": "Conectar con artistas y gestores culturales",
+      "url": "/comunidad",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "ODAM-App - Plataforma Cultural en escritorio"
+    },
+    {
+      "src": "/screenshots/narrow.png", 
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "ODAM-App - Experiencia móvil optimizada"
+    },
+    {
+      "src": "/screenshots/ultrawide.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "ODAM-App - Vista panorámica del patrimonio cultural"
+    }
+  ],
+  "features": [
+    "Cross Platform",
+    "fast",
+    "simple",
+    "Offline Capabilities",
+    "Audio Streaming",
+    "Cultural Heritage Preservation"
+  ],
+  "splash_pages": null
+}
