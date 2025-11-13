@@ -199,7 +199,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -212,7 +212,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.cedula}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -225,7 +225,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -239,7 +239,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -253,7 +253,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
           </div>
@@ -271,7 +271,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -284,7 +284,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm md:text-base text-gray-900""
+                className="flex-1 outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
               />
             </div>
           </div>
@@ -303,7 +303,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   name="ethnicGroup"
                   value={formData.ethnicGroup}
                   onChange={handleChange}
-                  className="flex-1 outline-none bg-white text-sm md:text-base"
+                  className="flex-1 outline-none bg-white text-sm md:text-base text-gray-900"
                 >
                   <option value="">Selecciona una opción</option>
                   <option value="afro">Afrodescendiente</option>
@@ -324,7 +324,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 name="musicalKnowledge"
                 value={formData.musicalKnowledge}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg outline-none text-sm md:text-base"
+                className="w-full p-3 border rounded-lg outline-none text-sm md:text-base text-gray-900"
               >
                 <option value="">Selecciona tu nivel</option>
                 <option value="principiante">Principiante</option>
