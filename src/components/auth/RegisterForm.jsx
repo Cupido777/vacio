@@ -147,21 +147,21 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-      {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-4 md:p-8 lg:p-12">
+      {/* Progress Bar - Mejorado para responsive */}
+      <div className="mb-6 md:mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 mb-4">
           {steps.map((step, index) => (
-            <div key={step.number} className="flex flex-col items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
+            <div key={step.number} className="flex flex-col items-center flex-1 mx-2">
+              <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 ${
                 currentStep >= step.number 
                   ? 'bg-colonial-yellow border-colonial-yellow text-colonial-blue' 
                   : 'border-gray-300 text-gray-400'
-              } font-semibold`}>
+              } font-semibold text-sm md:text-base`}>
                 {step.number}
               </div>
-              <span className={`text-sm mt-2 ${
-                currentStep >= step.number ? 'text-colonial-blue' : 'text-gray-400'
+              <span className={`text-xs md:text-sm mt-2 text-center ${
+                currentStep >= step.number ? 'text-colonial-blue font-medium' : 'text-gray-400'
               }`}>
                 {step.title}
               </span>
@@ -176,12 +176,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
         </div>
       </div>
 
-      <h2 className="text-3xl font-traditional text-colonial-blue text-center mb-8">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-traditional text-colonial-blue text-center mb-6 md:mb-8">
         Crear Cuenta ODAM
       </h2>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 md:mb-6 text-sm md:text-base">
           {error}
         </div>
       )}
@@ -189,9 +189,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       <form onSubmit={handleSubmit}>
         {/* Paso 1: Datos Básicos */}
         {currentStep === 1 && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-3 md:space-y-4 animate-fade-in">
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <User className="h-5 w-5 text-colonial-blue" />
+              <User className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="text"
                 name="fullName"
@@ -199,12 +199,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
 
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <CreditCard className="h-5 w-5 text-colonial-blue" />
+              <CreditCard className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="text"
                 name="cedula"
@@ -212,12 +212,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.cedula}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
 
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <Mail className="h-5 w-5 text-colonial-blue" />
+              <Mail className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="email"
                 name="email"
@@ -225,12 +225,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
 
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <Lock className="h-5 w-5 text-colonial-blue" />
+              <Lock className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="password"
                 name="password"
@@ -239,12 +239,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
 
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <Lock className="h-5 w-5 text-colonial-blue" />
+              <Lock className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="password"
                 name="confirmPassword"
@@ -253,7 +253,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 onChange={handleChange}
                 required
                 minLength="8"
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
           </div>
@@ -261,9 +261,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
         {/* Paso 2: Información de Contacto */}
         {currentStep === 2 && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-3 md:space-y-4 animate-fade-in">
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <Phone className="h-5 w-5 text-colonial-blue" />
+              <Phone className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="tel"
                 name="phone"
@@ -271,12 +271,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
 
             <div className="flex items-center space-x-3 p-3 border rounded-lg">
-              <MapPin className="h-5 w-5 text-colonial-blue" />
+              <MapPin className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
               <input
                 type="text"
                 name="city"
@@ -284,7 +284,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none"
+                className="flex-1 outline-none text-sm md:text-base"
               />
             </div>
           </div>
@@ -292,18 +292,18 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
         {/* Paso 3: Perfil Cultural */}
         {currentStep === 3 && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+          <div className="space-y-4 md:space-y-6 animate-fade-in">
+            <div className="space-y-2 md:space-y-3">
+              <label className="block text-xs md:text-sm font-medium text-gray-700">
                 Grupo Étnico (Opcional)
               </label>
               <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                <Users className="h-5 w-5 text-colonial-blue" />
+                <Users className="h-4 w-4 md:h-5 md:w-5 text-colonial-blue flex-shrink-0" />
                 <select
                   name="ethnicGroup"
                   value={formData.ethnicGroup}
                   onChange={handleChange}
-                  className="flex-1 outline-none bg-white"
+                  className="flex-1 outline-none bg-white text-sm md:text-base"
                 >
                   <option value="">Selecciona una opción</option>
                   <option value="afro">Afrodescendiente</option>
@@ -316,15 +316,15 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               </div>
             </div>
 
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+            <div className="space-y-2 md:space-y-3">
+              <label className="block text-xs md:text-sm font-medium text-gray-700">
                 Nivel de Conocimiento Musical
               </label>
               <select
                 name="musicalKnowledge"
                 value={formData.musicalKnowledge}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg outline-none"
+                className="w-full p-3 border rounded-lg outline-none text-sm md:text-base"
               >
                 <option value="">Selecciona tu nivel</option>
                 <option value="principiante">Principiante</option>
@@ -334,17 +334,17 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               </select>
             </div>
 
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+            <div className="space-y-2 md:space-y-3">
+              <label className="block text-xs md:text-sm font-medium text-gray-700">
                 Intereses Musicales (Puedes seleccionar varios)
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {['Bullerengue', 'Chandé', 'Mapalé', 'Cumbia', 'Porro', 'Vallenato', 'Gaitas', 'Tambores'].map(interest => (
                   <button
                     key={interest}
                     type="button"
                     onClick={() => handleInterestToggle(interest)}
-                    className={`p-2 border rounded-lg text-sm transition-colors ${
+                    className={`p-2 border rounded-lg text-xs md:text-sm transition-colors ${
                       formData.interests.includes(interest)
                         ? 'bg-colonial-yellow border-colonial-yellow text-colonial-blue'
                         : 'border-gray-300 text-gray-700 hover:border-colonial-blue'
@@ -357,16 +357,16 @@ const RegisterForm = ({ onSwitchToLogin }) => {
             </div>
 
             {/* Consentimientos */}
-            <div className="space-y-4 border-t pt-6">
+            <div className="space-y-3 md:space-y-4 border-t pt-4 md:pt-6">
               <div className="flex items-start space-x-2">
                 <input
                   type="checkbox"
                   name="acceptEthnicData"
                   checked={formData.acceptEthnicData}
                   onChange={handleChange}
-                  className="mt-1"
+                  className="mt-1 flex-shrink-0"
                 />
-                <label className="text-sm text-gray-600">
+                <label className="text-xs md:text-sm text-gray-600">
                   Autorizo el tratamiento de datos étnicos para fines estadísticos y de preservación cultural
                 </label>
               </div>
@@ -377,9 +377,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   name="acceptCommunications"
                   checked={formData.acceptCommunications}
                   onChange={handleChange}
-                  className="mt-1"
+                  className="mt-1 flex-shrink-0"
                 />
-                <label className="text-sm text-gray-600">
+                <label className="text-xs md:text-sm text-gray-600">
                   Deseo recibir información sobre nuevos cursos y actividades culturales
                 </label>
               </div>
@@ -391,9 +391,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   checked={formData.acceptTerms}
                   onChange={handleChange}
                   required
-                  className="mt-1"
+                  className="mt-1 flex-shrink-0"
                 />
-                <label className="text-sm text-gray-600">
+                <label className="text-xs md:text-sm text-gray-600">
                   Acepto los <a href="/terminos" className="text-colonial-blue underline">términos y condiciones</a>
                 </label>
               </div>
@@ -405,9 +405,9 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   checked={formData.acceptPrivacy}
                   onChange={handleChange}
                   required
-                  className="mt-1"
+                  className="mt-1 flex-shrink-0"
                 />
-                <label className="text-sm text-gray-600">
+                <label className="text-xs md:text-sm text-gray-600">
                   Acepto la <a href="/privacidad" className="text-colonial-blue underline">política de privacidad</a>
                 </label>
               </div>
@@ -415,46 +415,50 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           </div>
         )}
 
-        {/* Botones de Navegación */}
-        <div className="flex justify-between mt-8">
-          {currentStep > 1 ? (
-            <button
-              type="button"
-              onClick={handlePrevStep}
-              className="flex items-center space-x-2 px-6 py-3 border border-colonial-blue text-colonial-blue rounded-lg font-caribbean hover:bg-colonial-blue hover:text-white transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span>Anterior</span>
-            </button>
-          ) : (
-            <div></div>
-          )}
+        {/* Botones de Navegación - Mejorados para responsive */}
+        <div className="flex flex-col-reverse md:flex-row justify-between items-center space-y-4 md:space-y-0 space-y-reverse mt-6 md:mt-8">
+          <div className="w-full md:w-auto">
+            {currentStep > 1 ? (
+              <button
+                type="button"
+                onClick={handlePrevStep}
+                className="w-full md:w-auto flex items-center justify-center space-x-2 px-4 md:px-6 py-3 border border-colonial-blue text-colonial-blue rounded-lg font-caribbean hover:bg-colonial-blue hover:text-white transition-colors text-sm md:text-base"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span>Anterior</span>
+              </button>
+            ) : (
+              <div></div>
+            )}
+          </div>
 
-          {currentStep < steps.length ? (
-            <button
-              type="button"
-              onClick={handleNextStep}
-              className="flex items-center space-x-2 bg-colonial-yellow text-colonial-blue px-6 py-3 rounded-lg font-caribbean font-semibold hover:bg-yellow-500 transition-colors"
-            >
-              <span>Siguiente</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-colonial-yellow text-colonial-blue px-6 py-3 rounded-lg font-caribbean font-semibold hover:bg-yellow-500 transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Creando cuenta...' : 'Completar Registro'}
-            </button>
-          )}
+          <div className="w-full md:w-auto">
+            {currentStep < steps.length ? (
+              <button
+                type="button"
+                onClick={handleNextStep}
+                className="w-full md:w-auto flex items-center justify-center space-x-2 bg-colonial-yellow text-colonial-blue px-4 md:px-6 py-3 rounded-lg font-caribbean font-semibold hover:bg-yellow-500 transition-colors text-sm md:text-base"
+              >
+                <span>Siguiente</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full md:w-auto bg-colonial-yellow text-colonial-blue px-4 md:px-6 py-3 rounded-lg font-caribbean font-semibold hover:bg-yellow-500 transition-colors disabled:opacity-50 text-sm md:text-base"
+              >
+                {loading ? 'Creando cuenta...' : 'Completar Registro'}
+              </button>
+            )}
+          </div>
         </div>
       </form>
 
-      <div className="text-center mt-6 pt-6 border-t">
+      <div className="text-center mt-4 md:mt-6 pt-4 md:pt-6 border-t">
         <button
           onClick={onSwitchToLogin}
-          className="text-colonial-blue hover:underline"
+          className="text-colonial-blue hover:underline text-sm md:text-base"
         >
           ¿Ya tienes cuenta? Inicia sesión aquí
         </button>
