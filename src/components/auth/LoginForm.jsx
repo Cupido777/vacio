@@ -18,6 +18,8 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
     setLoading(true);
     setError('');
 
+    console.log('🔄 Intentando login con:', formData.email);
+
     if (!formData.email || !formData.password) {
       setError('Por favor completa todos los campos');
       setLoading(false);
@@ -27,15 +29,19 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
     try {
       const { data, error } = await login(formData.email, formData.password);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error de Supabase:', error);
+        throw error;
+      }
 
-      // Login exitoso - el AuthContext manejará la redirección
       console.log('✅ Login exitoso:', data.user);
+      
+      // Redirigir después de login exitoso
+      window.location.href = '/';
       
     } catch (error) {
       console.error('❌ Error en login:', error);
       
-      // Mensajes de error específicos
       if (error.message.includes('Invalid login credentials')) {
         setError('Email o contraseña incorrectos');
       } else if (error.message.includes('Email not confirmed')) {
@@ -57,7 +63,6 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
       [name]: value
     }));
     
-    // Limpiar error cuando el usuario empiece a escribir
     if (error) setError('');
   };
 
