@@ -11,6 +11,7 @@
     "predeploy": "npm run build",
     "deploy": "npm run build && gh-pages -d dist",
     "deploy:firebase": "npm run build && firebase deploy",
+    "deploy:netlify": "npm run build && netlify deploy --prod --dir=dist",
     "serve": "npx serve dist -s -l 3000",
     "clean": "rm -rf dist node_modules/.vite",
     "lint": "eslint src --ext .js,.jsx --report-unused-disable-directives --max-warnings 0",
