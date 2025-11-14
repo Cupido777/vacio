@@ -32,4 +32,4 @@ export const patrimonialService = {
     const { data, error } = await query;
     return { data, error };
   }
-}
+};
