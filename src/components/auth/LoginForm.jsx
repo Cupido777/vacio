@@ -119,7 +119,7 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-colonial-blue focus:border-colonial-blue transition-colors"
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-colonial-blue focus:border-colonial-blue transition-colors text-gray-900"
             />
           </div>
         </div>
@@ -151,7 +151,7 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
               onChange={handleChange}
               required
               minLength="6"
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-colonial-blue focus:border-colonial-blue transition-colors"
+              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-colonial-blue focus:border-colonial-blue transition-colors text-gray-900"
             />
             <button
               type="button"
