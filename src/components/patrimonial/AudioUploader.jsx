@@ -37,4 +37,4 @@ const AudioUploader = () => {
       {/* Más campos de metadatos... */}
     </form>
   );
-}
+};
