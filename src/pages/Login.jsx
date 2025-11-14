@@ -1,15 +1,13 @@
-// src/pages/Login.jsx
+// Login.jsx debería verse así:
 import React from 'react';
 import LoginForm from '../components/auth/LoginForm';
 
 const Login = () => {
   const handleSwitchToRegister = () => {
-    // Navegar a registro
     window.location.href = '/registro';
   };
 
   const handleForgotPassword = () => {
-    // Navegar a recuperación de contraseña
     window.location.href = '/recuperar-contrasena';
   };
 
