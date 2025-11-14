@@ -66,13 +66,6 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
     if (error) setError('');
   };
 
-  const handleDemoLogin = () => {
-    setFormData({
-      email: 'demo@odamapp.com',
-      password: 'demopassword123'
-    });
-  };
-
   return (
     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8">
       <div className="text-center mb-8">
@@ -82,21 +75,6 @@ const LoginForm = ({ onSwitchToRegister, onForgotPassword }) => {
         <p className="text-gray-600">
           Accede a tu cuenta ODAM
         </p>
-      </div>
-
-      {/* Demo Account Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center space-x-2 text-blue-800">
-          <AlertCircle className="h-4 w-4" />
-          <span className="text-sm font-medium">Cuenta de demostración</span>
-        </div>
-        <button
-          type="button"
-          onClick={handleDemoLogin}
-          className="text-blue-600 hover:text-blue-800 text-sm underline mt-1"
-        >
-          Clic aquí para cargar credenciales demo
-        </button>
       </div>
 
       {error && (
