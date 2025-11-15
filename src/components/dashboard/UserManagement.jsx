@@ -138,4 +138,80 @@ const UserManagement = ({ currentUser }) => {
             <tr className="border-b border-gray-200">
               <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">Usuario</th>
               <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">Rol</th>
-              <th className="text-left py
+              <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">Estado</th>
+              <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">Registro</th>
+              <th className="text-left py-3 px-4 text-sm font-medium text-gray-900">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.map(user => (
+              <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <td className="py-3 px-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm">
+                      {user.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">{user.name}</div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="py-3 px-4">
+                  <select
+                    value={user.role}
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    className={`text-xs font-medium px-2 py-1 rounded ${getRoleColor(user.role)} border-none focus:ring-2 focus:ring-colonial-yellow`}
+                  >
+                    <option value="user">Usuario</option>
+                    <option value="artist">Artista</option>
+                    <option value="curator">Curador</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </td>
+                <td className="py-3 px-4">
+                  <select
+                    value={user.status}
+                    onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                    className={`text-xs font-medium px-2 py-1 rounded ${getStatusColor(user.status)} border-none focus:ring-2 focus:ring-colonial-yellow`}
+                  >
+                    <option value="active">Activo</option>
+                    <option value="inactive">Inactivo</option>
+                    <option value="suspended">Suspendido</option>
+                  </select>
+                </td>
+                <td className="py-3 px-4 text-sm text-gray-500">
+                  {new Date(user.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-3 px-4">
+                  <div className="flex space-x-2">
+                    <button className="p-1 text-gray-400 hover:text-colonial-yellow transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <button className="p-1 text-gray-400 hover:text-blue-600 transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {filteredUsers.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          <div className="text-4xl mb-4">👥</div>
+          <p>No se encontraron usuarios</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default UserManagement;
