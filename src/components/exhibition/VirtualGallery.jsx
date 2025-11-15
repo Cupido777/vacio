@@ -4,11 +4,9 @@ import ArtworkModal from './ArtworkModal';
 const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) => {
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentView, setCurrentView] = useState('overview');
   const [zoomLevel, setZoomLevel] = useState(1);
   const galleryRef = useRef(null);
 
-  // Configuración de la galería virtual
   const galleryConfig = {
     wallColor: '#f8f4e9',
     floorColor: '#e5e7eb',
@@ -36,48 +34,23 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
 
   const handleResetView = () => {
     setZoomLevel(1);
-    setCurrentView('overview');
   };
 
-  // Simular distribución de obras en paredes virtuales
+  // Distribución simplificada de obras
   const getArtworkPositions = () => {
     if (!artworks || artworks.length === 0) return [];
 
-    const walls = [
-      { id: 1, x: 0, y: 0, width: 800, height: 400, rotation: 0 }, // Pared frontal
-      { id: 2, x: -400, y: 0, width: 400, height: 400, rotation: 90 }, // Pared izquierda
-      { id: 3, x: 400, y: 0, width: 400, height: 400, rotation: -90 }, // Pared derecha
-    ];
-
-    const positions = [];
-    let artworkIndex = 0;
-
-    walls.forEach(wall => {
-      const artworksPerWall = Math.ceil(artworks.length / walls.length);
-      const startIndex = artworkIndex;
-      const endIndex = Math.min(startIndex + artworksPerWall, artworks.length);
-
-      for (let i = startIndex; i < endIndex; i++) {
-        if (artworkIndex >= artworks.length) break;
-
-        const row = Math.floor((i - startIndex) / 3);
-        const col = (i - startIndex) % 3;
-        
-        const x = wall.x + (col - 1) * (galleryConfig.artworkSize.width + galleryConfig.spacing);
-        const y = wall.y + (row - 1) * (galleryConfig.artworkSize.height + galleryConfig.spacing) + 50;
-
-        positions.push({
-          artwork: artworks[artworkIndex],
-          position: { x, y, z: 0 },
-          wall: wall.id,
-          rotation: wall.rotation
-        });
-
-        artworkIndex++;
-      }
+    return artworks.map((artwork, index) => {
+      const row = Math.floor(index / 4);
+      const col = index % 4;
+      const x = (col - 1.5) * (galleryConfig.artworkSize.width + galleryConfig.spacing);
+      const y = (row - 1) * (galleryConfig.artworkSize.height + galleryConfig.spacing);
+      
+      return {
+        artwork,
+        position: { x, y }
+      };
     });
-
-    return positions;
   };
 
   const artworkPositions = getArtworkPositions();
@@ -107,11 +80,10 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
   }, []);
 
   return (
-    <div className="relative w-full h-full bg-gray-900 rounded-xl overflow-hidden">
+    <div className="relative w-full h-full bg-gray-900 rounded-lg overflow-hidden">
       {/* Controles de la galería */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
-        {/* Controles de zoom */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg flex flex-col space-y-1">
+      <div className="absolute top-4 right-4 z-10 flex gap-2">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg flex flex-col gap-1">
           <button
             onClick={handleZoomIn}
             className="p-2 hover:bg-gray-100 rounded transition-colors"
@@ -141,7 +113,6 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
           </button>
         </div>
 
-        {/* Indicador de zoom */}
         <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg text-center">
           <span className="text-xs font-medium text-gray-700">
             {Math.round(zoomLevel * 100)}%
@@ -155,135 +126,62 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
         <p className="text-sm text-gray-600 mb-2">
           {artworks?.length || 0} obras en exhibición
         </p>
-        <div className="flex items-center space-x-2 text-xs text-gray-500">
-          <span>🖱️ Haz clic en las obras para ver detalles</span>
-        </div>
       </div>
 
-      {/* Galería virtual 3D */}
+      {/* Galería virtual - Versión simplificada y compatible */}
       <div 
         ref={galleryRef}
-        className="relative w-full h-full perspective-1000"
+        className="relative w-full h-full"
         style={{ 
           transform: `scale(${zoomLevel})`,
-          transformStyle: 'preserve-3d'
+          transition: 'transform 0.3s ease'
         }}
       >
-        {/* Piso */}
-        <div 
-          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-200 h-100"
-          style={{
-            background: `repeating-linear-gradient(
-              45deg,
-              ${galleryConfig.floorColor},
-              ${galleryConfig.floorColor} 10px,
-              #d1d5db 10px,
-              #d1d5db 20px
-            )`,
-            transform: 'rotateX(60deg) translateZ(-200px)',
-            transformStyle: 'preserve-3d'
-          }}
-        />
-
-        {/* Paredes */}
-        {[1, 2, 3].map(wallId => (
-          <div
-            key={wallId}
-            className="absolute bg-cover bg-center"
-            style={{
-              width: wallId === 1 ? '800px' : '400px',
-              height: '400px',
-              background: galleryConfig.wallColor,
-              left: wallId === 1 ? '50%' : wallId === 2 ? 'calc(50% - 400px)' : 'calc(50% + 400px)',
-              top: '50%',
-              transform: `
-                translate(-50%, -50%)
-                ${wallId === 1 ? 'rotateY(0deg) translateZ(200px)' : ''}
-                ${wallId === 2 ? 'rotateY(90deg) translateZ(200px)' : ''}
-                ${wallId === 3 ? 'rotateY(-90deg) translateZ(200px)' : ''}
-              `,
-              transformStyle: 'preserve-3d',
-              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.1)'
-            }}
-          />
-        ))}
-
-        {/* Obras de arte posicionadas */}
-        {artworkPositions.map(({ artwork, position, wall, rotation }, index) => (
-          <div
-            key={artwork.id}
-            className="absolute cursor-pointer transform transition-all duration-300 hover:scale-110 hover:z-20"
-            style={{
-              left: `calc(50% + ${position.x}px)`,
-              top: `calc(50% + ${position.y}px)`,
-              width: `${galleryConfig.artworkSize.width}px`,
-              height: `${galleryConfig.artworkSize.height}px`,
-              transform: `
-                translate(-50%, -50%)
-                ${wall === 1 ? 'rotateY(0deg) translateZ(202px)' : ''}
-                ${wall === 2 ? 'rotateY(90deg) translateZ(202px)' : ''}
-                ${wall === 3 ? 'rotateY(-90deg) translateZ(202px)' : ''}
-              `,
-              transformStyle: 'preserve-3d'
-            }}
-            onClick={() => handleArtworkClick(artwork)}
-          >
-            {/* Marco de la obra */}
-            <div className="w-full h-full bg-white rounded-lg shadow-lg overflow-hidden border-4 border-gold-500 hover:border-cartagena-yellow transition-colors duration-300">
-              {artwork.media_type === 'image' && artwork.media_url ? (
-                <img
-                  src={artwork.media_url}
-                  alt={artwork.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = '/images/default-artwork.jpg';
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                  <div className="text-center p-4">
-                    <div className="text-2xl mb-2">
-                      {artwork.media_type === 'audio' ? '🎵' : 
-                       artwork.media_type === 'video' ? '🎬' : '📄'}
+        {/* Grid de obras */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-8">
+          {artworkPositions.map(({ artwork }) => (
+            <div
+              key={artwork.id}
+              className="cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={() => handleArtworkClick(artwork)}
+            >
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden border-4 border-yellow-400 hover:border-yellow-500 transition-colors duration-300">
+                {artwork.media_type === 'image' && artwork.media_url ? (
+                  <img
+                    src={artwork.media_url}
+                    alt={artwork.title}
+                    className="w-full h-48 object-cover"
+                    onError={(e) => {
+                      e.target.src = '/images/default-artwork.jpg';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-48 flex items-center justify-center bg-gray-100">
+                    <div className="text-center p-4">
+                      <div className="text-2xl mb-2">
+                        {artwork.media_type === 'audio' ? '🎵' : 
+                         artwork.media_type === 'video' ? '🎬' : '📄'}
+                      </div>
+                      <p className="text-xs text-gray-600 font-medium line-clamp-2">
+                        {artwork.title}
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-600 font-medium line-clamp-2">
-                      {artwork.title}
-                    </p>
                   </div>
-                </div>
-              )}
-              
-              {/* Overlay de información */}
-              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-end justify-center">
-                <div className="w-full p-2 bg-gradient-to-t from-black via-black/70 to-transparent text-white opacity-0 hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-xs font-medium text-center line-clamp-1">
+                )}
+                
+                {/* Overlay de información */}
+                <div className="p-3 bg-white">
+                  <p className="text-sm font-medium text-gray-900 line-clamp-1">
                     {artwork.title}
                   </p>
-                  <p className="text-xs text-center text-gray-300">
+                  <p className="text-xs text-gray-500">
                     {artwork.author_name}
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Placa informativa */}
-            <div 
-              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs p-1 rounded opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap"
-              style={{ zIndex: 30 }}
-            >
-              {artwork.title}
-            </div>
-          </div>
-        ))}
-
-        {/* Punto de luz/ambiente */}
-        <div 
-          className="absolute top-1/4 left-1/2 w-100 h-100 rounded-full bg-yellow-200 opacity-20 blur-xl"
-          style={{
-            transform: 'translate(-50%, -50%) translateZ(500px)',
-            transformStyle: 'preserve-3d'
-          }}
-        />
+          ))}
+        </div>
       </div>
 
       {/* Instrucciones de navegación */}
@@ -292,8 +190,6 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
           <span>🖱️ Clic en obras para detalles</span>
           <span>•</span>
           <span>🔍 +/- para zoom</span>
-          <span>•</span>
-          <span>🔄 0 para reset</span>
         </div>
       </div>
 
@@ -314,11 +210,6 @@ const VirtualGallery = ({ exhibition, artworks, currentUser, onArtworkUpdate }) 
             <h3 className="text-xl font-bold mb-2">Galería Vacía</h3>
             <p className="text-gray-300 max-w-md">
               Esta exposición no tiene obras agregadas aún.
-              {currentUser?.id === exhibition?.curator_id && (
-                <span className="block mt-2">
-                  Como curador, puedes agregar obras desde el panel de administración.
-                </span>
-              )}
             </p>
           </div>
         </div>
