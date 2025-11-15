@@ -19,6 +19,10 @@
   --color-border: #E2E8F0;
   --color-error: #E53E3E;
   
+  /* 3D Gallery Properties */
+  --perspective-1000: 1000px;
+  --transform-3d: preserve-3d;
+  
   /* Fallback values for browsers that don't support CSS variables */
   color-scheme: light;
 }
@@ -56,6 +60,125 @@ body {
   line-height: 1.6;
   font-weight: 400;
   text-rendering: optimizeSpeed;
+}
+
+/* ===== 3D GALLERY COMPATIBILITY STYLES ===== */
+
+/* Perspective utilities with cross-browser support */
+.perspective-1000 {
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+}
+
+.perspective-500 {
+  perspective: 500px;
+  -webkit-perspective: 500px;
+  -moz-perspective: 500px;
+}
+
+/* Transform style with cross-browser support */
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+}
+
+.transform-style-flat {
+  transform-style: flat;
+  -webkit-transform-style: flat;
+  -moz-transform-style: flat;
+}
+
+/* Backface visibility */
+.backface-visible {
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  -moz-backface-visibility: visible;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+}
+
+/* 3D Transform utilities */
+.transform-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+}
+
+.rotate-y-90 {
+  transform: rotateY(90deg);
+  -webkit-transform: rotateY(90deg);
+  -moz-transform: rotateY(90deg);
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+
+.rotate-y--90 {
+  transform: rotateY(-90deg);
+  -webkit-transform: rotateY(-90deg);
+  -moz-transform: rotateY(-90deg);
+}
+
+.translate-z-200 {
+  transform: translateZ(200px);
+  -webkit-transform: translateZ(200px);
+  -moz-transform: translateZ(200px);
+}
+
+.translate-z--200 {
+  transform: translateZ(-200px);
+  -webkit-transform: translateZ(-200px);
+  -moz-transform: translateZ(-200px);
+}
+
+/* 3D Gallery specific animations */
+@keyframes float-3d {
+  0%, 100% { 
+    transform: translateY(0px) translateZ(0); 
+    -webkit-transform: translateY(0px) translateZ(0);
+    -moz-transform: translateY(0px) translateZ(0);
+  }
+  50% { 
+    transform: translateY(-10px) translateZ(10px); 
+    -webkit-transform: translateY(-10px) translateZ(10px);
+    -moz-transform: translateY(-10px) translateZ(10px);
+  }
+}
+
+@keyframes gallery-enter {
+  from {
+    opacity: 0;
+    transform: translateZ(-100px) rotateY(10deg);
+    -webkit-transform: translateZ(-100px) rotateY(10deg);
+    -moz-transform: translateZ(-100px) rotateY(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0) rotateY(0deg);
+    -webkit-transform: translateZ(0) rotateY(0deg);
+    -moz-transform: translateZ(0) rotateY(0deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float-3d 6s ease-in-out infinite;
+  -webkit-animation: float-3d 6s ease-in-out infinite;
+  -moz-animation: float-3d 6s ease-in-out infinite;
+}
+
+.animate-gallery-enter {
+  animation: gallery-enter 0.8s ease-out both;
+  -webkit-animation: gallery-enter 0.8s ease-out both;
+  -moz-animation: gallery-enter 0.8s ease-out both;
 }
 
 /* ===== PROGRESSIVE ENHANCEMENT: GRID & FLEXBOX FALLBACKS ===== */
