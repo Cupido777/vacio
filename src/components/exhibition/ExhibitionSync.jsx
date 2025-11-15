@@ -130,4 +130,44 @@ const ExhibitionSync = ({
           <div className="text-lg font-bold text-green-700">{syncMetrics.physicalOnly}</div>
           <div className="text-green-600">Solo físico</div>
         </div>
-        <div className="bg-purple-50
+        <div className="bg-purple-50 p-2 rounded text-center">
+          <div className="text-lg font-bold text-purple-700">{syncMetrics.virtualOnly}</div>
+          <div className="text-purple-600">Solo virtual</div>
+        </div>
+        <div className="bg-gray-50 p-2 rounded text-center">
+          <div className="text-lg font-bold text-gray-700">{syncMetrics.totalArtworks}</div>
+          <div className="text-gray-600">Total obras</div>
+        </div>
+      </div>
+
+      {/* Recomendaciones */}
+      {(syncMetrics.physicalOnly > 0 || syncMetrics.virtualOnly > 0) && (
+        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h4 className="font-medium text-yellow-800 text-sm mb-1">Recomendaciones</h4>
+          <ul className="text-xs text-yellow-700 space-y-1">
+            {syncMetrics.physicalOnly > 0 && (
+              <li>• {syncMetrics.physicalOnly} obras solo en exhibición física</li>
+            )}
+            {syncMetrics.virtualOnly > 0 && (
+              <li>• {syncMetrics.virtualOnly} obras solo en exhibición virtual</li>
+            )}
+            <li>• Considera sincronizar para una experiencia unificada</li>
+          </ul>
+        </div>
+      )}
+
+      {/* Información para curadores */}
+      {currentUser?.id === exhibition?.curator_id && (
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="font-medium text-blue-800 text-sm mb-1">Panel del Curador</h4>
+          <p className="text-xs text-blue-700">
+            Como curador, puedes gestionar la distribución de obras entre 
+            las modalidades física y virtual desde el panel de administración.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ExhibitionSync;
