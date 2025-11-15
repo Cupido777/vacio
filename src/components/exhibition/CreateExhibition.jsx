@@ -1,3 +1,4 @@
+// src/components/exhibition/CreateExhibition.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import exhibitionService from '../../services/exhibitionService';
@@ -129,4 +130,21 @@ const CreateExhibition = ({ currentUser }) => {
           <button
             type="button"
             onClick={() => navigate('/galeria')}
-            className="px-6
+            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2 bg-colonial-yellow text-white rounded-lg hover:bg-colonial-dark-yellow transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Creando...' : 'Crear Exposición'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CreateExhibition;
