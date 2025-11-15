@@ -41,7 +41,9 @@ export default {
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
-        '128': '32rem'
+        '128': '32rem',
+        '200': '50rem',
+        '100': '25rem'
       },
       zIndex: {
         '60': '60',
@@ -53,6 +55,29 @@ export default {
       opacity: {
         '15': '0.15',
         '85': '0.85'
+      },
+      // 3D Transform utilities
+      perspective: {
+        '1000': '1000px',
+        '500': '500px',
+      },
+      transformStyle: {
+        'preserve-3d': 'preserve-3d',
+        'flat': 'flat',
+      },
+      backfaceVisibility: {
+        'visible': 'visible',
+        'hidden': 'hidden',
+      },
+      translate: {
+        'z-200': '200px',
+        'z-500': '500px',
+        'z--200': '-200px',
+      },
+      rotate: {
+        'y-90': '90deg',
+        'y-180': '180deg',
+        'y--90': '-90deg',
       }
     },
   },
@@ -74,6 +99,21 @@ export default {
           'transform-style': 'preserve-3d',
           '-webkit-transform-style': 'preserve-3d',
           '-moz-transform-style': 'preserve-3d'
+        },
+        '.transform-style-flat': {
+          'transform-style': 'flat',
+          '-webkit-transform-style': 'flat',
+          '-moz-transform-style': 'flat'
+        },
+        '.perspective-1000': {
+          'perspective': '1000px',
+          '-webkit-perspective': '1000px',
+          '-moz-perspective': '1000px'
+        },
+        '.perspective-500': {
+          'perspective': '500px',
+          '-webkit-perspective': '500px',
+          '-moz-perspective': '500px'
         },
         '.scrollbar-thin': {
           'scrollbar-width': 'thin',
@@ -108,6 +148,7 @@ export default {
       addVariant('group-hocus', ['.group:hover &', '.group:focus &'])
       addVariant('supports-grid', '@supports (display: grid)')
       addVariant('supports-flex', '@supports (display: flex)')
+      addVariant('supports-3d', '@supports (transform-style: preserve-3d)')
     }
   ],
   // Safelist for dynamic classes
@@ -115,9 +156,16 @@ export default {
     'animate-fade-in-up',
     'animate-slide-in-right', 
     'animate-scale-in',
+    'animate-float-3d',
+    'animate-gallery-enter',
     'animation-delay-100',
     'animation-delay-200',
     'animation-delay-300',
+    'perspective-1000',
+    'perspective-500',
+    'transform-style-preserve-3d',
+    'backface-visible',
+    'backface-hidden',
     'xs:flex',
     'xs:grid',
     'print:hidden'
