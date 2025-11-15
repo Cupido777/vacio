@@ -13,6 +13,8 @@ import Admin from './pages/Admin';
 import UserProfile from './pages/UserProfile';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './components/dashboard/Dashboard';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import './styles/global.css';
 
 function App() {
@@ -29,6 +31,14 @@ function App() {
                 <Route path="/comunidad" element={<Community />} />
                 <Route path="/galeria" element={<GalleryPage />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route 
+                  path="/admin/dashboard" 
+                  element={
+                    <ProtectedRoute requiredRole={['admin', 'curator']}>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/perfil" element={<UserProfile />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Register />} />
