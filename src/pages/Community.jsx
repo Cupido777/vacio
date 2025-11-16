@@ -1,6 +1,5 @@
-// src/pages/Community.jsx
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../services/supabaseClient';
 import CreatePost from '../components/community/CreatePost';
 import PostFeed from '../components/community/PostFeed';
 import CommunityChallenges from '../components/community/CommunityChallenges';
