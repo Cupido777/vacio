@@ -1,9 +1,14 @@
 import { supabase } from './supabaseClient';
 
 const cache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+const CACHE_DURATION = {
+  SHORT: 2 * 60 * 1000,    // 2 minutos - datos volátiles
+  MEDIUM: 10 * 60 * 1000,  // 10 minutos - datos semi-estáticos  
+  LONG: 30 * 60 * 1000     // 30 minutos - datos estáticos
+};
 
-const withCache = (key, fn, duration = CACHE_DURATION) => {
+// Sistema de cache mejorado
+const withCache = (key, fn, duration = CACHE_DURATION.MEDIUM, invalidatePatterns = []) => {
   const now = Date.now();
   const cached = cache.get(key);
   
@@ -12,8 +17,30 @@ const withCache = (key, fn, duration = CACHE_DURATION) => {
   }
   
   return fn().then(data => {
-    cache.set(key, { data, timestamp: now });
+    cache.set(key, { 
+      data, 
+      timestamp: now,
+      invalidatePatterns 
+    });
     return data;
+  }).catch(error => {
+    // Fallback a cache existente en caso de error
+    if (cached) {
+      console.warn(`⚠️ Usando cache por error en: ${key}`);
+      return cached.data;
+    }
+    throw error;
+  });
+};
+
+// Invalidación inteligente de cache
+const invalidateRelatedCache = (patterns) => {
+  patterns.forEach(pattern => {
+    cache.forEach((value, key) => {
+      if (value.invalidatePatterns.includes(pattern) || key.includes(pattern)) {
+        cache.delete(key);
+      }
+    });
   });
 };
 
@@ -21,9 +48,9 @@ export const programaFormacionService = {
   // ===== PROGRAMAS DE FORMACIÓN =====
   async getProgramasActivos() {
     const cacheKey = 'programas_activos';
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log('📡 Fetching programas activos...');
         const { data, error } = await supabase
           .from('programas_formacion')
           .select('*')
@@ -33,17 +60,17 @@ export const programaFormacionService = {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        console.error('Error getting programas activos:', error);
-        throw error;
+        console.error('❌ Error getting programas activos:', error);
+        throw new Error('No se pudieron cargar los programas activos');
       }
-    });
+    }, CACHE_DURATION.MEDIUM, ['programa']);
   },
 
   async getProgramaById(programaId) {
     const cacheKey = `programa_${programaId}`;
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log(`📡 Fetching programa ${programaId}...`);
         const { data, error } = await supabase
           .from('programas_formacion')
           .select(`
@@ -58,27 +85,26 @@ export const programaFormacionService = {
         if (error) throw error;
         return data;
       } catch (error) {
-        console.error('Error getting programa:', error);
-        throw error;
+        console.error(`❌ Error getting programa ${programaId}:`, error);
+        throw new Error('No se pudo cargar la información del programa');
       }
-    });
+    }, CACHE_DURATION.MEDIUM, ['programa', `programa_${programaId}`]);
   },
 
   // ===== INSCRIPCIONES DE JÓVENES =====
   async inscribirJoven(programaId, userId, datosJoven) {
     try {
+      console.log(`📝 Inscribiendo joven ${userId} en programa ${programaId}...`);
       const { data, error } = await supabase
         .from('inscripciones_jovenes')
-        .insert([
-          {
-            programa_id: programaId,
-            user_id: userId,
-            datos_contacto: datosJoven.datosContacto,
-            emergencia_contacto: datosJoven.emergenciaContacto,
-            necesidades_especiales: datosJoven.necesidadesEspeciales,
-            aceptado_terminos: true
-          }
-        ])
+        .insert([{
+          programa_id: programaId,
+          user_id: userId,
+          datos_contacto: datosJoven.datosContacto,
+          emergencia_contacto: datosJoven.emergenciaContacto,
+          necesidades_especiales: datosJoven.necesidadesEspeciales,
+          aceptado_terminos: true
+        }])
         .select(`
           *,
           programa:programas_formacion(*)
@@ -88,21 +114,19 @@ export const programaFormacionService = {
       if (error) throw error;
 
       // Invalidar cache relacionado
-      cache.delete(`inscripciones_${programaId}`);
-      cache.delete(`programa_${programaId}`);
-      
+      invalidateRelatedCache(['inscripciones', 'programa', 'estadisticas']);
       return data;
     } catch (error) {
-      console.error('Error inscribiendo joven:', error);
-      throw error;
+      console.error('❌ Error inscribiendo joven:', error);
+      throw new Error(error.message || 'No se pudo completar la inscripción');
     }
   },
 
   async getInscripcionesByPrograma(programaId) {
     const cacheKey = `inscripciones_${programaId}`;
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log(`📡 Fetching inscripciones para programa ${programaId}...`);
         const { data, error } = await supabase
           .from('inscripciones_jovenes')
           .select(`
@@ -119,10 +143,10 @@ export const programaFormacionService = {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        console.error('Error getting inscripciones:', error);
-        throw error;
+        console.error(`❌ Error getting inscripciones para programa ${programaId}:`, error);
+        throw new Error('No se pudieron cargar las inscripciones');
       }
-    });
+    }, CACHE_DURATION.SHORT, ['inscripciones']);
   },
 
   async getInscripcionByUser(programaId, userId) {
@@ -137,17 +161,17 @@ export const programaFormacionService = {
       if (error && error.code !== 'PGRST116') throw error;
       return data || null;
     } catch (error) {
-      console.error('Error getting inscripcion user:', error);
-      throw error;
+      console.error('❌ Error getting inscripcion user:', error);
+      throw new Error('No se pudo verificar la inscripción');
     }
   },
 
   // ===== MÓDULOS PEDAGÓGICOS =====
   async getModulosByPrograma(programaId) {
     const cacheKey = `modulos_${programaId}`;
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log(`📡 Fetching módulos para programa ${programaId}...`);
         const { data, error } = await supabase
           .from('modulos_pedagogicos')
           .select('*')
@@ -157,17 +181,17 @@ export const programaFormacionService = {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        console.error('Error getting modulos:', error);
-        throw error;
+        console.error(`❌ Error getting modulos para programa ${programaId}:`, error);
+        throw new Error('No se pudieron cargar los módulos');
       }
-    });
+    }, CACHE_DURATION.MEDIUM, ['modulos']);
   },
 
   async getModuloById(moduloId) {
     const cacheKey = `modulo_${moduloId}`;
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log(`📡 Fetching módulo ${moduloId}...`);
         const { data, error } = await supabase
           .from('modulos_pedagogicos')
           .select('*')
@@ -177,10 +201,10 @@ export const programaFormacionService = {
         if (error) throw error;
         return data;
       } catch (error) {
-        console.error('Error getting modulo:', error);
-        throw error;
+        console.error(`❌ Error getting modulo ${moduloId}:`, error);
+        throw new Error('No se pudo cargar la información del módulo');
       }
-    });
+    }, CACHE_DURATION.MEDIUM, ['modulo']);
   },
 
   // ===== PROGRESO DE MÓDULOS =====
@@ -208,8 +232,8 @@ export const programaFormacionService = {
         }
       };
     } catch (error) {
-      console.error('Error getting progreso modulo:', error);
-      throw error;
+      console.error(`❌ Error getting progreso modulo ${moduloId} para joven ${jovenId}:`, error);
+      throw new Error('No se pudo cargar el progreso del módulo');
     }
   },
 
@@ -228,19 +252,20 @@ export const programaFormacionService = {
 
       if (error) throw error;
 
-      // Invalidar cache relacionado
-      cache.delete(`progreso_joven_${jovenId}`);
-      
+      invalidateRelatedCache([`progreso_joven_${jovenId}`, 'estadisticas']);
       return data;
     } catch (error) {
-      console.error('Error updating progreso modulo:', error);
-      throw error;
+      console.error(`❌ Error updating progreso modulo ${moduloId}:`, error);
+      throw new Error('No se pudo actualizar el progreso');
     }
   },
 
   async marcarActividadCompletada(jovenId, moduloId, actividadId) {
     try {
-      const progresoActual = await this.getProgresoModulo(jovenId, moduloId);
+      const [progresoActual, modulo] = await Promise.all([
+        this.getProgresoModulo(jovenId, moduloId),
+        this.getModuloById(moduloId)
+      ]);
       
       const actividadesCompletadas = [
         ...(progresoActual.actividades_completadas || []),
@@ -248,9 +273,6 @@ export const programaFormacionService = {
       ];
 
       const actividadesUnicas = [...new Set(actividadesCompletadas)];
-      
-      // Obtener el módulo para calcular progreso
-      const modulo = await this.getModuloById(moduloId);
       const totalActividades = modulo.recursos?.actividades?.length || 1;
       const progresoPercent = Math.round((actividadesUnicas.length / totalActividades) * 100);
       const completado = progresoPercent >= 100;
@@ -262,17 +284,17 @@ export const programaFormacionService = {
         fecha_completado: completado ? new Date().toISOString() : null
       });
     } catch (error) {
-      console.error('Error marcando actividad completada:', error);
-      throw error;
+      console.error('❌ Error marcando actividad completada:', error);
+      throw new Error('No se pudo marcar la actividad como completada');
     }
   },
 
   // ===== TALLERES PRESENCIALES =====
   async getTalleresByPrograma(programaId) {
     const cacheKey = `talleres_${programaId}`;
-    
     return withCache(cacheKey, async () => {
       try {
+        console.log(`📡 Fetching talleres para programa ${programaId}...`);
         const { data, error } = await supabase
           .from('talleres_presenciales')
           .select('*')
@@ -282,10 +304,10 @@ export const programaFormacionService = {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        console.error('Error getting talleres:', error);
-        throw error;
+        console.error(`❌ Error getting talleres para programa ${programaId}:`, error);
+        throw new Error('No se pudieron cargar los talleres');
       }
-    });
+    }, CACHE_DURATION.SHORT, ['talleres']);
   },
 
   async registrarAsistenciaQR(tallerId, jovenId, qrCode) {
@@ -324,10 +346,12 @@ export const programaFormacionService = {
         .single();
 
       if (error) throw error;
+      
+      invalidateRelatedCache(['asistencia', 'estadisticas']);
       return data;
     } catch (error) {
-      console.error('Error registrando asistencia QR:', error);
-      throw error;
+      console.error('❌ Error registrando asistencia QR:', error);
+      throw new Error(error.message || 'No se pudo registrar la asistencia');
     }
   },
 
@@ -345,8 +369,8 @@ export const programaFormacionService = {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error getting asistencia:', error);
-      throw error;
+      console.error(`❌ Error getting asistencia para joven ${jovenId}:`, error);
+      throw new Error('No se pudieron cargar los datos de asistencia');
     }
   },
 
@@ -355,25 +379,25 @@ export const programaFormacionService = {
     try {
       const { data, error } = await supabase
         .from('proyectos_finales')
-        .insert([
-          {
-            joven_id: jovenId,
-            programa_id: programaId,
-            titulo: proyectoData.titulo,
-            descripcion: proyectoData.descripcion,
-            categoria: proyectoData.categoria,
-            herramientas_utilizadas: proyectoData.herramientasUtilizadas,
-            archivos_adjuntos: proyectoData.archivosAdjuntos || []
-          }
-        ])
+        .insert([{
+          joven_id: jovenId,
+          programa_id: programaId,
+          titulo: proyectoData.titulo,
+          descripcion: proyectoData.descripcion,
+          categoria: proyectoData.categoria,
+          herramientas_utilizadas: proyectoData.herramientasUtilizadas,
+          archivos_adjuntos: proyectoData.archivosAdjuntos || []
+        }])
         .select()
         .single();
 
       if (error) throw error;
+      
+      invalidateRelatedCache(['proyectos', 'estadisticas']);
       return data;
     } catch (error) {
-      console.error('Error creando proyecto final:', error);
-      throw error;
+      console.error('❌ Error creando proyecto final:', error);
+      throw new Error('No se pudo crear el proyecto final');
     }
   },
 
@@ -388,15 +412,14 @@ export const programaFormacionService = {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error getting proyectos joven:', error);
-      throw error;
+      console.error(`❌ Error getting proyectos para joven ${jovenId}:`, error);
+      throw new Error('No se pudieron cargar los proyectos');
     }
   },
 
   // ===== CERTIFICACIONES =====
   async generarCertificado(jovenId, programaId) {
     try {
-      // Verificar que el joven haya completado el programa
       const [progresoModulos, proyectoFinal] = await Promise.all([
         this.getProgresoGeneralJoven(jovenId, programaId),
         this.getProyectosByJoven(jovenId)
@@ -410,20 +433,17 @@ export const programaFormacionService = {
         throw new Error('El joven no tiene proyecto final entregado');
       }
 
-      // Generar código único de certificado
       const codigoCertificado = `CERT-${programaId.slice(0, 8)}-${jovenId.slice(0, 8)}-${Date.now()}`;
 
       const { data, error } = await supabase
         .from('certificaciones_jovenes')
-        .insert([
-          {
-            joven_id: jovenId,
-            programa_id: programaId,
-            codigo_certificado: codigoCertificado,
-            proyecto_final_id: proyectoFinal[0].id,
-            habilidades_adquiridas: progresoModulos.habilidadesAdquiridas
-          }
-        ])
+        .insert([{
+          joven_id: jovenId,
+          programa_id: programaId,
+          codigo_certificado: codigoCertificado,
+          proyecto_final_id: proyectoFinal[0].id,
+          habilidades_adquiridas: progresoModulos.habilidadesAdquiridas
+        }])
         .select(`
           *,
           programa:programas_formacion(*),
@@ -436,10 +456,12 @@ export const programaFormacionService = {
         .single();
 
       if (error) throw error;
+      
+      invalidateRelatedCache(['certificaciones', 'estadisticas']);
       return data;
     } catch (error) {
-      console.error('Error generando certificado:', error);
-      throw error;
+      console.error('❌ Error generando certificado:', error);
+      throw new Error(error.message || 'No se pudo generar el certificado');
     }
   },
 
@@ -458,8 +480,8 @@ export const programaFormacionService = {
       if (error && error.code !== 'PGRST116') throw error;
       return data || null;
     } catch (error) {
-      console.error('Error getting certificado:', error);
-      throw error;
+      console.error(`❌ Error getting certificado para joven ${jovenId}:`, error);
+      throw new Error('No se pudo cargar la información del certificado');
     }
   },
 
@@ -507,8 +529,8 @@ export const programaFormacionService = {
         completados: progresoModulos?.filter(p => p.completado).length || 0
       };
     } catch (error) {
-      console.error('Error getting estadisticas:', error);
-      throw error;
+      console.error(`❌ Error getting estadisticas para programa ${programaId}:`, error);
+      throw new Error('No se pudieron cargar las estadísticas');
     }
   },
 
@@ -534,7 +556,6 @@ export const programaFormacionService = {
 
       const tieneProyecto = proyecto.length > 0;
 
-      // Calcular progreso general (60% módulos, 30% asistencia, 10% proyecto)
       const progresoGeneral = Math.round(
         (progresoModulosPercent * 0.6) + 
         (progresoAsistencia * 0.3) + 
@@ -553,12 +574,12 @@ export const programaFormacionService = {
         habilidadesAdquiridas: this.generarHabilidadesAdquiridas(progresoModulos.data || [])
       };
     } catch (error) {
-      console.error('Error getting progreso general:', error);
-      throw error;
+      console.error(`❌ Error getting progreso general para joven ${jovenId}:`, error);
+      throw new Error('No se pudo cargar el progreso general');
     }
   },
 
-  // ===== UTILIDADES =====
+  // ===== UTILIDADES MEJORADAS =====
   generarHabilidadesAdquiridas(progresoModulos) {
     const habilidades = [];
     const modulosCompletados = progresoModulos.filter(m => m.completado);
@@ -578,7 +599,42 @@ export const programaFormacionService = {
     return habilidades;
   },
 
+  // Precarga datos esenciales para mejor UX
+  preloadEssentialData(programaId) {
+    const preloads = [
+      this.getProgramaById(programaId),
+      this.getInscripcionesByPrograma(programaId),
+      this.getModulosByPrograma(programaId)
+    ];
+    return Promise.allSettled(preloads);
+  },
+
+  // Limpiar cache específico de usuario
+  clearUserCache(userId) {
+    invalidateRelatedCache([`progreso_joven_${userId}`, `inscripcion_${userId}`]);
+  },
+
+  // Estadísticas del cache (debugging)
+  getCacheStats() {
+    const now = Date.now();
+    let valid = 0, expired = 0;
+    
+    cache.forEach((value) => {
+      if (now - value.timestamp < CACHE_DURATION.MEDIUM) valid++;
+      else expired++;
+    });
+    
+    return {
+      total: cache.size,
+      valid,
+      expired,
+      hitRate: valid / cache.size
+    };
+  },
+
   cleanupCache() {
+    const previousSize = cache.size;
     cache.clear();
+    console.log(`🧹 Cache limpiado: ${previousSize} entradas eliminadas`);
   }
 };
