@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from './supabase';
 
 // Cache simple para optimizar requests repetidos
 const cache = new Map();
