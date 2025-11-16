@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { programaFormacionService } from '../../services/programaFormacionService';
 import TalleresPresenciales from './TalleresPresenciales';
 import ModulosPedagogicos from './ModulosPedagogicos';
 import CertificacionSeguimiento from './CertificacionSeguimiento';
+import InscripcionMasiva from './InscripcionMasiva';
 import {
   Users,
   BookOpen,
@@ -11,9 +12,7 @@ import {
   Award,
   BarChart3,
   Download,
-  Plus,
   Search,
-  Filter,
   UserCheck,
   TrendingUp,
   Clock,
@@ -22,6 +21,18 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
+
+// Hook simple para debounce
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const ProgramaFormacionDigital = () => {
   const { currentUser } = useAuth();
@@ -32,6 +43,9 @@ const ProgramaFormacionDigital = () => {
   const [vistaActiva, setVistaActiva] = useState('general');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
+  
+  // Búsqueda con debounce para mejor performance
+  const debouncedBusqueda = useDebounce(busqueda, 300);
 
   useEffect(() => {
     cargarPrograma();
@@ -51,13 +65,14 @@ const ProgramaFormacionDigital = () => {
 
       setPrograma(programaActivo);
 
-      const [inscripcionesData, estadisticasData] = await Promise.all([
+      // Cargar datos en paralelo con manejo de errores individual
+      const [inscripcionesData, estadisticasData] = await Promise.allSettled([
         programaFormacionService.getInscripcionesByPrograma(programaActivo.id),
         programaFormacionService.getEstadisticasPrograma(programaActivo.id)
       ]);
 
-      setInscripciones(inscripcionesData);
-      setEstadisticas(estadisticasData);
+      setInscripciones(inscripcionesData.status === 'fulfilled' ? inscripcionesData.value : []);
+      setEstadisticas(estadisticasData.status === 'fulfilled' ? estadisticasData.value : null);
 
     } catch (error) {
       console.error('Error cargando programa:', error);
@@ -66,19 +81,22 @@ const ProgramaFormacionDigital = () => {
     }
   };
 
-  // Filtrar inscripciones
-  const inscripcionesFiltradas = inscripciones.filter(inscripcion => {
-    const coincideEstado = filtroEstado === 'todos' || inscripcion.estado_inscripcion === filtroEstado;
-    
-    const coincideBusqueda = busqueda === '' || 
-      inscripcion.user?.user_metadata?.full_name?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      inscripcion.user?.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      inscripcion.datos_contacto?.barrio?.toLowerCase().includes(busqueda.toLowerCase());
+  // Filtrar inscripciones con useMemo para optimización
+  const inscripcionesFiltradas = useMemo(() => {
+    return inscripciones.filter(inscripcion => {
+      const coincideEstado = filtroEstado === 'todos' || inscripcion.estado_inscripcion === filtroEstado;
+      
+      const coincideBusqueda = debouncedBusqueda === '' || 
+        inscripcion.user?.user_metadata?.full_name?.toLowerCase().includes(debouncedBusqueda.toLowerCase()) ||
+        inscripcion.user?.email?.toLowerCase().includes(debouncedBusqueda.toLowerCase()) ||
+        inscripcion.datos_contacto?.barrio?.toLowerCase().includes(debouncedBusqueda.toLowerCase());
 
-    return coincideEstado && coincideBusqueda;
-  });
+      return coincideEstado && coincideBusqueda;
+    });
+  }, [inscripciones, filtroEstado, debouncedBusqueda]);
 
-  const CardEstadistica = ({ icon: Icon, titulo, valor, subtitulo, color = 'blue' }) => (
+  // Componentes memoizados para mejor performance
+  const CardEstadistica = useCallback(({ icon: Icon, titulo, valor, subtitulo, color = 'blue' }) => (
     <div className={`bg-white rounded-xl p-6 shadow-lg border-l-4 border-${color}-500`}>
       <div className="flex items-center justify-between">
         <div>
@@ -93,9 +111,9 @@ const ProgramaFormacionDigital = () => {
         </div>
       </div>
     </div>
-  );
+  ), []);
 
-  const EstadoBadge = ({ estado }) => {
+  const EstadoBadge = useCallback(({ estado }) => {
     const config = {
       activo: { color: 'bg-green-100 text-green-800', icon: CheckCircle },
       completado: { color: 'bg-blue-100 text-blue-800', icon: Award },
@@ -111,13 +129,14 @@ const ProgramaFormacionDigital = () => {
         {estado}
       </span>
     );
-  };
+  }, []);
 
   const generarReporteExcel = () => {
     console.log('Generando reporte Excel...');
     alert('Reporte generado para descarga');
   };
 
+  // Loading state mejorado
   if (loading) {
     return (
       <div className="min-h-screen bg-colonial-sand py-8">
@@ -153,6 +172,15 @@ const ProgramaFormacionDigital = () => {
     );
   }
 
+  const navItems = [
+    { id: 'general', label: 'Visión General', icon: BarChart3 },
+    { id: 'jovenes', label: 'Jóvenes', icon: Users },
+    { id: 'talleres', label: 'Talleres', icon: Calendar },
+    { id: 'modulos', label: 'Módulos', icon: BookOpen },
+    { id: 'certificaciones', label: 'Certificaciones', icon: Award },
+    { id: 'inscripciones', label: 'Inscripciones', icon: UserCheck }
+  ];
+
   return (
     <div className="min-h-screen bg-colonial-sand py-8">
       <div className="container mx-auto px-4">
@@ -180,13 +208,7 @@ const ProgramaFormacionDigital = () => {
 
           {/* Navegación Principal */}
           <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-inner">
-            {[
-              { id: 'general', label: 'Visión General', icon: BarChart3 },
-              { id: 'jovenes', label: 'Jóvenes', icon: Users },
-              { id: 'talleres', label: 'Talleres', icon: Calendar },
-              { id: 'modulos', label: 'Módulos', icon: BookOpen },
-              { id: 'certificaciones', label: 'Certificaciones', icon: Award }
-            ].map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <button
@@ -498,6 +520,11 @@ const ProgramaFormacionDigital = () => {
         {/* Vista: Certificaciones y Seguimiento */}
         {vistaActiva === 'certificaciones' && (
           <CertificacionSeguimiento programaId={programa.id} modo="admin" />
+        )}
+
+        {/* Vista: Inscripción Masiva */}
+        {vistaActiva === 'inscripciones' && (
+          <InscripcionMasiva programaId={programa.id} />
         )}
       </div>
     </div>
