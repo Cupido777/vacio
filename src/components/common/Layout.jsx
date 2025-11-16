@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Music, Book, Users, Image, Mic, Settings, LogIn, UserPlus } from 'lucide-react';
+import { Music, Book, Users, Image, Mic, Settings, LogIn, UserPlus, GraduationCap } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';  
 import MetaTags from './SEO/MetaTags';
 import StructuredData from './SEO/StructuredData';
 
-// ... el resto del código permanece igual
 const Layout = ({ children }) => {
   const location = useLocation();
   const { currentUser, logout } = useAuth();
@@ -13,6 +12,7 @@ const Layout = ({ children }) => {
   const navItems = [
     { path: '/', icon: Music, label: 'Inicio', description: 'Página principal de ODAM-App' },
     { path: '/cursos', icon: Book, label: 'Cursos', description: 'Formación artística digital especializada' },
+    { path: '/mi-formacion', icon: GraduationCap, label: 'Mi Formación', description: 'Programa de formación digital para jóvenes' },
     { path: '/patrimonio', icon: Mic, label: 'Patrimonio', description: 'Repositorio de tradiciones musicales' },
     { path: '/comunidad', icon: Users, label: 'Comunidad', description: 'Red de artistas y gestores culturales' },
     { path: '/galeria', icon: Image, label: 'Galería', description: 'Exposición digital de obras culturales' },
