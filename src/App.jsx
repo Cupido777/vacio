@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import DashboardJovenes from './pages/DashboardJovenes';
 import './styles/global.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/cursos" element={<Courses />} />
+                <Route path="/mi-formacion" element={<DashboardJovenes />} />
                 <Route path="/patrimonio" element={<Repository />} />
                 <Route path="/comunidad" element={<Community />} />
                 <Route path="/galeria" element={<GalleryPage />} />
