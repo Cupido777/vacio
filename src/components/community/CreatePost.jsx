@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { communityService } from '../../services/communityService';
-import { supabase } from '../../supabaseClient';
+import { supabase } from '../../services/supabaseClient';
 
 const CreatePost = ({ currentUser, onPostCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
