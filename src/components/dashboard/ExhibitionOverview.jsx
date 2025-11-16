@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import exhibitionService from '../../services/exhibitionService';
-
+import { exhibitionService } from '../../services/exhibitionService';
 const ExhibitionOverview = () => {
   const [exhibitions, setExhibitions] = useState([]);
   const [loading, setLoading] = useState(true);
