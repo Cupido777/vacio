@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { programaFormacionService } from '../../services/programaFormacionService';
+import TalleresPresenciales from './TalleresPresenciales';
+import ModulosPedagogicos from './ModulosPedagogicos';
+import CertificacionSeguimiento from './CertificacionSeguimiento';
 import {
   Users,
   BookOpen,
   Calendar,
   Award,
-  Download,
-  Filter,
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-  QrCode,
   BarChart3,
+  Download,
+  Plus,
+  Search,
+  Filter,
   UserCheck,
+  TrendingUp,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 const ProgramaFormacionDigital = () => {
@@ -26,9 +29,9 @@ const ProgramaFormacionDigital = () => {
   const [programa, setPrograma] = useState(null);
   const [inscripciones, setInscripciones] = useState([]);
   const [estadisticas, setEstadisticas] = useState(null);
+  const [vistaActiva, setVistaActiva] = useState('general');
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
-  const [vistaActiva, setVistaActiva] = useState('general');
 
   useEffect(() => {
     cargarPrograma();
@@ -75,7 +78,7 @@ const ProgramaFormacionDigital = () => {
     return coincideEstado && coincideBusqueda;
   });
 
-  const CardEstadistica = ({ icon: Icon, titulo, valor, subtitulo, color = 'blue', tendencia }) => (
+  const CardEstadistica = ({ icon: Icon, titulo, valor, subtitulo, color = 'blue' }) => (
     <div className={`bg-white rounded-xl p-6 shadow-lg border-l-4 border-${color}-500`}>
       <div className="flex items-center justify-between">
         <div>
@@ -89,14 +92,6 @@ const ProgramaFormacionDigital = () => {
           <Icon className={`h-6 w-6 text-${color}-600`} />
         </div>
       </div>
-      {tendencia && (
-        <div className={`flex items-center mt-2 text-xs ${
-          tendencia > 0 ? 'text-green-600' : 'text-red-600'
-        }`}>
-          <TrendingUp className="h-3 w-3 mr-1" />
-          {tendencia > 0 ? '+' : ''}{tendencia}%
-        </div>
-      )}
     </div>
   );
 
@@ -119,18 +114,7 @@ const ProgramaFormacionDigital = () => {
   };
 
   const generarReporteExcel = () => {
-    // Simular descarga de reporte
-    const datos = inscripcionesFiltradas.map(inscripcion => ({
-      'Nombre': inscripcion.user?.user_metadata?.full_name || 'N/A',
-      'Email': inscripcion.user?.email,
-      'Teléfono': inscripcion.datos_contacto?.telefono || 'N/A',
-      'Barrio': inscripcion.datos_contacto?.barrio || 'N/A',
-      'Edad': inscripcion.datos_contacto?.edad || 'N/A',
-      'Estado': inscripcion.estado_inscripcion,
-      'Fecha Inscripción': new Date(inscripcion.fecha_inscripcion).toLocaleDateString()
-    }));
-
-    console.log('Generando reporte Excel:', datos);
+    console.log('Generando reporte Excel...');
     alert('Reporte generado para descarga');
   };
 
@@ -191,20 +175,16 @@ const ProgramaFormacionDigital = () => {
                 <Download className="h-4 w-4 mr-2" />
                 Exportar
               </button>
-              <button className="flex items-center bg-colonial-yellow text-colonial-blue px-4 py-2 rounded-lg font-caribbean hover:bg-yellow-500 transition-colors">
-                <Plus className="h-4 w-4 mr-2" />
-                Nuevo Taller
-              </button>
             </div>
           </div>
 
-          {/* Navegación */}
+          {/* Navegación Principal */}
           <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-inner">
             {[
               { id: 'general', label: 'Visión General', icon: BarChart3 },
               { id: 'jovenes', label: 'Jóvenes', icon: Users },
-              { id: 'modulos', label: 'Módulos', icon: BookOpen },
               { id: 'talleres', label: 'Talleres', icon: Calendar },
+              { id: 'modulos', label: 'Módulos', icon: BookOpen },
               { id: 'certificaciones', label: 'Certificaciones', icon: Award }
             ].map((item) => {
               const Icon = item.icon;
@@ -226,7 +206,7 @@ const ProgramaFormacionDigital = () => {
           </div>
         </div>
 
-        {/* Estadísticas Principales */}
+        {/* Vista: Visión General */}
         {vistaActiva === 'general' && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -263,7 +243,7 @@ const ProgramaFormacionDigital = () => {
               />
             </div>
 
-            {/* Gráficos de Progreso (Placeholder) */}
+            {/* Gráficos de Progreso */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <div className="bg-white rounded-xl p-6 shadow-lg">
                 <h3 className="font-caribbean text-lg text-gray-900 mb-4">
@@ -315,10 +295,68 @@ const ProgramaFormacionDigital = () => {
                 </div>
               </div>
             </div>
+
+            {/* Jóvenes Recientes */}
+            <div className="bg-white rounded-xl shadow-lg">
+              <div className="p-6 border-b">
+                <h3 className="font-caribbean text-lg text-gray-900">
+                  Jóvenes Inscritos Recientemente
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
+                        Joven
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
+                        Barrio
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
+                        Estado
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
+                        Fecha Inscripción
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {inscripciones.slice(0, 5).map((inscripcion) => (
+                      <tr key={inscripcion.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-caribbean text-gray-900">
+                            {inscripcion.user?.user_metadata?.full_name || 'Nombre no disponible'}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {inscripcion.user?.email}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {inscripcion.datos_contacto?.barrio || 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <EstadoBadge estado={inscripcion.estado_inscripcion} />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {new Date(inscripcion.fecha_inscripcion).toLocaleDateString('es-ES')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {inscripciones.length === 0 && (
+                <div className="text-center py-12">
+                  <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">No hay jóvenes inscritos en el programa.</p>
+                </div>
+              )}
+            </div>
           </>
         )}
 
-        {/* Vista de Jóvenes */}
+        {/* Vista: Gestión de Jóvenes */}
         {vistaActiva === 'jovenes' && (
           <div className="bg-white rounded-xl shadow-lg">
             {/* Filtros y Búsqueda */}
@@ -360,22 +398,22 @@ const ProgramaFormacionDigital = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Joven
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Contacto
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Barrio
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Estado
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Fecha Inscripción
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-caribbean text-gray-500 uppercase">
                       Acciones
                     </th>
                   </tr>
@@ -447,41 +485,19 @@ const ProgramaFormacionDigital = () => {
           </div>
         )}
 
-        {/* Otras vistas (Placeholder) */}
-        {vistaActiva === 'modulos' && (
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="font-traditional text-xl text-gray-700 mb-2">
-              Gestión de Módulos
-            </h3>
-            <p className="text-gray-600">
-              Vista en desarrollo - Próximamente
-            </p>
-          </div>
-        )}
-
+        {/* Vista: Talleres Presenciales */}
         {vistaActiva === 'talleres' && (
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="font-traditional text-xl text-gray-700 mb-2">
-              Gestión de Talleres
-            </h3>
-            <p className="text-gray-600">
-              Vista en desarrollo - Próximamente
-            </p>
-          </div>
+          <TalleresPresenciales programaId={programa.id} />
         )}
 
+        {/* Vista: Módulos Pedagógicos */}
+        {vistaActiva === 'modulos' && (
+          <ModulosPedagogicos programaId={programa.id} modo="admin" />
+        )}
+
+        {/* Vista: Certificaciones y Seguimiento */}
         {vistaActiva === 'certificaciones' && (
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <Award className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="font-traditional text-xl text-gray-700 mb-2">
-              Gestión de Certificaciones
-            </h3>
-            <p className="text-gray-600">
-              Vista en desarrollo - Próximamente
-            </p>
-          </div>
+          <CertificacionSeguimiento programaId={programa.id} modo="admin" />
         )}
       </div>
     </div>
